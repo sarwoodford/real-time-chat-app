@@ -24,6 +24,15 @@ app.use(session({
 
 let connectedClients = [];
 
+const userSchema = new mongoose.Schema({
+    username: { type: String, required: true, trim: true, unique: true },
+    password: { type: String, required: true },
+    role: { type: String, enum: ['admin', 'user'], default: user },
+    joinDate: { type: Date, default: Date.now },
+});
+
+const user = mongoose.model('user', userSchema);
+
 //Note: These are (probably) not all the required routes, but are a decent starting point for the routes you'll probably need
 
 app.ws('/ws', (socket, request) => {    
