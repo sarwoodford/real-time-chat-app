@@ -31,7 +31,16 @@ const userSchema = new mongoose.Schema({
     joinDate: { type: Date, default: Date.now },
 });
 
+const messageSchema = new mongoose.Schema({
+    message: { type: String, required: true },
+    sender: { type: String, required: true},
+    timeSent: { type: Date, default: Date.now},
+});
+
 const user = mongoose.model('user', userSchema);
+const message = new mongoose.Schema('message', messageSchema);
+
+module.exports = { user, message };
 
 //Note: These are (probably) not all the required routes, but are a decent starting point for the routes you'll probably need
 
