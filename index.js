@@ -24,44 +24,6 @@ app.use(session({
 
 let connectedClients = [];
 
-const userSchema = new mongoose.Schema({
-    username: { type: String, required: true, trim: true, unique: true },
-    password: { type: String, required: true },
-    role: { type: String, enum: ['admin', 'user'], default: 'user' },
-    joinDate: { type: Date, default: Date.now },
-});
-
-const messageSchema = new mongoose.Schema({
-    message: { type: String, required: true },
-    sender: { type: String, required: true},
-    timeSent: { type: Date, default: Date.now},
-});
-
-const User = mongoose.model('user', userSchema);
-const Message = new mongoose.Schema('message', messageSchema);
-
-module.exports = { User, Message };
-
-async function seedUsers() {
-        try {
-            const userCount = await User.countDocuments();
-
-            const adminPassword = await bcrypt.hash('admin123', 10);
-            const regUserPassword = await bcrypt.hash('user123', 10);
-
-            if (userCount === 0) {
-            await User.insertMany([
-                    { username: 'Admin Doe', password: adminPassword, role: 'admin', joinDate: new Date('2024-03-03')},
-                    { username: 'Regular Smith',  password: regUserPassword, role: 'user', joinDate: new Date('2024-11-01')}
-            ]);
-            console.log("Seeded users collection.");
-        }
-    }
-    catch (err) {
-        console.error("Error seeding users collection:", err);
-    }
-}
-
 //Note: These are (probably) not all the required routes, but are a decent starting point for the routes you'll probably need
 
 app.ws('/ws', (socket, request) => {    
@@ -107,6 +69,44 @@ app.post('/logout', (request, response) => {
 mongoose.connect(MONGO_URI)
     .then(() => app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`)))
     .catch((err) => console.error('MongoDB connection error:', err));
+
+    const userSchema = new mongoose.Schema({
+        username: { type: String, required: true, trim: true, unique: true },
+        password: { type: String, required: true },
+        role: { type: String, enum: ['admin', 'user'], default: 'user' },
+        joinDate: { type: Date, default: Date.now },
+    });
+    
+    const messageSchema = new mongoose.Schema({
+        message: { type: String, required: true },
+        sender: { type: String, required: true},
+        timeSent: { type: Date, default: Date.now},
+    });
+    
+    const User = mongoose.model('user', userSchema);
+    const Message = new mongoose.Schema('message', messageSchema);
+    
+    module.exports = { User, Message };
+    
+    async function seedUsers() {
+            try {
+                const userCount = await User.countDocuments();
+    
+                const adminPassword = await bcrypt.hash('admin123', 10);
+                const regUserPassword = await bcrypt.hash('user123', 10);
+    
+                if (userCount === 0) {
+                await User.insertMany([
+                        { username: 'Admin Doe', password: adminPassword, role: 'admin', joinDate: new Date('2024-03-03')},
+                        { username: 'Regular Smith',  password: regUserPassword, role: 'user', joinDate: new Date('2024-11-01')}
+                ]);
+                console.log("Seeded users collection.");
+            }
+        }
+        catch (err) {
+            console.error("Error seeding users collection:", err);
+        }
+    }
 
 /**
  * Handles a client disconnecting from the chat server
