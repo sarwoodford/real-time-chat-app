@@ -116,7 +116,16 @@ app.get("/dashboard", async (request, response) => {
 
 app.get("/profile", async (request, response) => {});
 
-app.post("/logout", (request, response) => {});
+app.post("/logout", (request, response) => {
+  request.session.destroy((err) => {
+    if (err) {
+      console.log("Error Loggin Out.", err);
+      return response.status(500).send("Server Error");
+    }
+
+    return response.redirect("/");
+  });
+});
 
 mongoose
   .connect(MONGO_URI)
