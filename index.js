@@ -42,7 +42,7 @@ app.get("/", async (request, response) => {
 });
 
 app.get("/login", async (request, response) => {
-  response.render("login");
+  response.render("login", { errorMessage: null });
 });
 
 app.post("/login", async (request, response) => {
