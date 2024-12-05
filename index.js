@@ -47,12 +47,14 @@ app.get("/login", async (request, response) => {
 
 app.post("/login", async (request, response) => {
   const { username, password } = request.body;
+  console.log(request.body);
+  console.log("Username:", username + " Password " + password);
 
   try {
     const user = await User.findOne({ username });
     if (!user) {
       return response.render("login", {
-        errorMessage: "Invalid Login Credentials.",
+        errorMessage: "Invalid Login Credentials. User not found.",
       });
     }
 
@@ -158,8 +160,8 @@ async function seedUsers() {
   try {
     const userCount = await User.countDocuments();
 
-    const adminPassword = await bcrypt.hash("admin123", 10);
-    const regUserPassword = await bcrypt.hash("user123", 10);
+    const adminPassword = await bcrypt.hash("admin123", SALT_ROUNDS);
+    const regUserPassword = await bcrypt.hash("user123", SALT_ROUNDS);
 
     if (userCount === 0) {
       await User.insertMany([
@@ -167,13 +169,13 @@ async function seedUsers() {
           username: "Admin Doe",
           password: adminPassword,
           role: "admin",
-          joinDate: new Date("2024-03-03"),
+          joinDate: new Date(),
         },
         {
           username: "Regular Smith",
           password: regUserPassword,
           role: "user",
-          joinDate: new Date("2024-11-01"),
+          joinDate: new Date(),
         },
       ]);
       console.log("Seeded users collection.");
