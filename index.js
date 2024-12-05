@@ -41,7 +41,42 @@ app.get("/", async (request, response) => {
   response.render("index/unauthenticated");
 });
 
-app.get("/login", async (request, response) => {});
+app.get("/login", async (request, response) => {
+  response.render("login");
+});
+
+app.post("/login", async (request, response) => {
+  const { username, password } = request.body;
+
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return response.render("login", {
+        errorMessage: "Invalid Login Credentials.",
+      });
+    }
+
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      return response.render("login", {
+        errorMessage: "Invalid Login Credentials.",
+      });
+    }
+
+    request.session.user = {
+      id: user.id,
+      username: user.username,
+      role: user.role,
+    };
+
+    return response.redirect("/dashboard");
+  } catch (error) {
+    console.error("Error Loggin In. Please Retry", error);
+    return response.render("login", {
+      errorMessage: "Error Loggin In. Please Retry.",
+    });
+  }
+});
 
 app.get("/signup", async (request, response) => {
   return response.render("signup", { errorMessage: null });
