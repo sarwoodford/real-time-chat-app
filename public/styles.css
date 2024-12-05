@@ -1,10 +1,5 @@
 body {
-  background: linear-gradient(
-    90deg,
-    rgba(93, 142, 251, 1) 0%,
-    rgba(93, 142, 251, 1) 30%,
-    rgba(0, 212, 255, 1) 100%
-  );
+  background: #2b2f3d;
   height: 100%;
   padding: 0px;
   margin: 0px;
@@ -67,11 +62,15 @@ body header {
 }
 
 .main-content button {
+  background-color: #4a2c80;
+  color: #f6f6f6;
   border: none;
-  background: #f6f6f6;
-  padding: 6px;
+  padding: 10px;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  outline: none;
 }
 .main-content .button-container {
   display: flex;
@@ -81,8 +80,6 @@ body header {
 }
 
 .action-button {
-  background: #f6f6f6;
-  color: #5d8efb;
   text-decoration: none;
   padding: 10px 20px;
   border-radius: 5px;
@@ -92,11 +89,85 @@ body header {
 }
 
 .action-button:hover {
-  background: rgba(246, 246, 246, 0.8);
-  color: rgba(93, 142, 251, 0.8);
+  background-color: #a37cc7;
+  transform: translateY(-2px);
   cursor: pointer;
 }
 
 .error-message {
   color: #ff0000;
+}
+
+/* Header Styles */
+header {
+  background-color: #4a2c80;
+  color: #f6f6f6;
+  padding: 15px 20px;
+  text-align: center;
+  font-size: 1.3em;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: end;
+}
+
+nav {
+  color: #f6f6f6;
+  /* padding: 10px 0; */
+  display: flex;
+  justify-content: center;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+nav ul li {
+  margin: 0 20px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #f6f6f6;
+  transition: color 0.3s ease;
+  position: relative;
+}
+
+nav ul li a::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #f6f6f6;
+  transition: width 0.3s ease;
+}
+
+nav ul li a:hover::after {
+  width: 100%;
+}
+
+nav ul li a.active {
+  font-weight: bold;
+}
+
+/* Button Styles */
+button {
+  background-color: #4a2c80;
+  color: #f6f6f6;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+
+button:hover {
+  background-color: #a37cc7;
+  transform: translateY(-2px);
 }
