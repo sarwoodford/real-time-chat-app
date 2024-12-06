@@ -66,6 +66,12 @@ app.post("/login", async (request, response) => {
       });
     }
 
+    if (user.banned) {
+      return response.render("login", {
+        errorMessage: "You have been banned, sucka.",
+      });
+    }
+
     request.session.user = {
       id: user.id,
       username: user.username,
