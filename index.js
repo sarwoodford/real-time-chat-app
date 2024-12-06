@@ -48,10 +48,11 @@ app.get("/login", async (request, response) => {
 app.post("/login", async (request, response) => {
   const { username, password } = request.body;
   console.log(request.body);
-  console.log("Username:", username + " Password " + password);
+  console.log("Username:", username + " Password: " + password);
 
   try {
     const user = await User.findOne({ username });
+    console.log("User Object: " + user);
     if (!user) {
       return response.render("login", {
         errorMessage: "Invalid Login Credentials. User not found.",
@@ -70,6 +71,11 @@ app.post("/login", async (request, response) => {
       username: user.username,
       role: user.role,
     };
+
+    console.log("User.role: " + user.role);
+    console.log("Username.role: " + username.role);
+    console.log("User.session.role: " + request.session.user.role);
+    console.log("Session: " + request.session.user);
 
     return response.redirect("/dashboard");
   } catch (error) {
@@ -116,14 +122,37 @@ app.get("/dashboard", async (request, response) => {
   return response.render("index/authenticated");
 });
 
-app.get("/profile", async (request, response) => {});
+app.get("/profile", async (request, response) => {
+  if (!request.session.user) {
+    return response.redirect("/login");
+  }
 
-app.post("/logout", (request, response) => {
+  const user = await User.findById(request.session.user.id);
+  return response.render("profile", { user });
+});
+
+app.get("/admin-dashboard", async (request, response) => {
+  if (!request.session.user) {
+    return response.redirect("/login");
+  }
+
+  if (request.session.user.role !== "admin") {
+    console.log(request.session.user.role);
+    return response.redirect("/dashboard");
+  }
+
+  const users = await User.find({});
+  return response.render("admin-dashboard", { users });
+});
+
+app.get("/logout", (request, response) => {
   request.session.destroy((err) => {
     if (err) {
       console.log("Error Loggin Out.", err);
       return response.status(500).send("Server Error");
     }
+
+    console.log("Logged Out Successfully.");
 
     return response.redirect("/");
   });
@@ -184,6 +213,8 @@ async function seedUsers() {
     console.error("Error seeding users collection:", err);
   }
 }
+
+seedUsers();
 
 /**
  * Handles a client disconnecting from the chat server

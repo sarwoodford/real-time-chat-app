@@ -1,0 +1,9 @@
+<%- include('partials/header', { title: "Profile", user }) %>
+
+<div class="main-content">
+  <h1>Your Profile</h1>
+  <p><strong>Username:</strong> <%= user.username %></p>
+  <p><strong>Join Date:</strong> <%= user.joinDate.toLocaleDateString() %></p>
+</div>
+
+<%- include('partials/footer') %>
