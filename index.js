@@ -33,24 +33,21 @@ app.ws("/ws", (socket, request) => {
   const username = request.session.user.username;
   if (!username) {
     socket.close();
-    return; 
+    return;
   }
-  connectedClients.push({username, socket});
+  connectedClients.push({ username, socket });
 
   connectedClients.forEach((client) => {
     if (client.socket !== socket) {
-      client.socket.send(
-        JSON.stringify({type: "userConnected", username})
-      );
+      client.socket.send(JSON.stringify({ type: "userConnected", username }));
     }
   });
 
-
-  socket.on("message", async(rawMessage) => {
-    try{
+  socket.on("message", async (rawMessage) => {
+    try {
       const parsedMessage = JSON.parse(rawMessage);
-      if(parsedMessage.type = "chatMessage"){
-        const {content} = parsedMessage;
+      if ((parsedMessage.type = "chatMessage")) {
+        const { content } = parsedMessage;
 
         // Save message to db
         const newMessage = new Message({
@@ -69,32 +66,33 @@ app.ws("/ws", (socket, request) => {
             })
           );
         });
+      }
+    } catch (error) {
+      console.error("Error handling WebSocket message:", error);
     }
-  } catch (error) {
-    console.error("Error handling WebSocket message:", error);
-  }
   });
 
   socket.on("close", () => {
-    connectedClients = connectedClients.filter((client) => client.socket !== socket);
+    connectedClients = connectedClients.filter(
+      (client) => client.socket !== socket
+    );
     connectedClients.forEach((client) =>
-      client.socket.send(
-        JSON.stringify({ type: "userDisconnected", username })
-      )
+      client.socket.send(JSON.stringify({ type: "userDisconnected", username }))
     );
   });
 });
 
-
-
-
-
-
 app.get("/", async (request, response) => {
+  if (request.session.user) {
+    return response.redirect("/dashboard");
+  }
   response.render("index/unauthenticated");
 });
 
 app.get("/login", async (request, response) => {
+  if (request.session.user) {
+    return response.redirect("/dashboard");
+  }
   response.render("login", { errorMessage: null });
 });
 
