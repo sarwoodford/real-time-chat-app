@@ -5,14 +5,18 @@
   <ul>
     <% users.forEach(user => { %>
     <li>
-      <%= user.username %> <% if (user.banned === true) { %>
+      <%= user.username %> <% if (user.banned === true && user.role != "admin")
+      { %>
       <span style="color: red">Banned</span>
       <a href="/unban/<%= user._id %>">Unban</a>
-      <% } else { %>
+      <% } %> <% if (user.banned === false && user.role != "admin") { %>
       <span style="color: green">Active</span>
       <a href="/ban/<%= user._id %>">Ban</a>
-      <% } %>
+      <% } %> <% if (user.role != "admin") { %>
       <a href="/delete/<%= user._id %>">Delete</a>
+      <% } else {%>
+      <span style="color: yellow">Admin</span>
+      <% } %>
     </li>
     <% }) %>
   </ul>
