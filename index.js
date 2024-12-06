@@ -30,12 +30,65 @@ let connectedClients = [];
 //Note: These are (probably) not all the required routes, but are a decent starting point for the routes you'll probably need
 
 app.ws("/ws", (socket, request) => {
-  socket.on("message", (rawMessage) => {
-    const parsedMessage = JSON.parse(rawMessage);
+  const username = request.session.user.username;
+  if (!username) {
+    socket.close();
+    return; 
+  }
+  connectedClients.push({username, socket});
+
+  connectedClients.forEach((client) => {
+    if (client.socket !== socket) {
+      client.socket.send(
+        JSON.stringify({type: "userConnected", username})
+      );
+    }
   });
 
-  socket.on("close", () => {});
+
+  socket.on("message", async(rawMessage) => {
+    try{
+      const parsedMessage = JSON.parse(rawMessage);
+      if(parsedMessage.type = "chatMessage"){
+        const {content} = parsedMessage;
+
+        // Save message to db
+        const newMessage = new Message({
+          message: content,
+          sender: username,
+        });
+        await newMessage.save();
+
+        // Broadcast message to all connected clients
+        connectedClients.forEach((client) => {
+          client.socket.send(
+            JSON.stringify({
+              type: "chatMessage",
+              username,
+              content,
+            })
+          );
+        });
+    }
+  } catch (error) {
+    console.error("Error handling WebSocket message:", error);
+  }
+  });
+
+  socket.on("close", () => {
+    connectedClients = connectedClients.filter((client) => client.socket !== socket);
+    connectedClients.forEach((client) =>
+      client.socket.send(
+        JSON.stringify({ type: "userDisconnected", username })
+      )
+    );
+  });
 });
+
+
+
+
+
 
 app.get("/", async (request, response) => {
   response.render("index/unauthenticated");
