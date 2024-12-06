@@ -51,7 +51,9 @@ app.post("/login", async (request, response) => {
   console.log("Username:", username + " Password " + password);
 
   try {
-    const user = await User.findOne({ username });
+    const user = await User.findOne({
+      username: username.trim().toLowerCase(),
+    });
     if (!user) {
       return response.render("login", {
         errorMessage: "Invalid Login Credentials. User not found.",
@@ -158,27 +160,29 @@ module.exports = { User, Message };
 
 async function seedUsers() {
   try {
-    const userCount = await User.countDocuments();
+    const adminExists = await User.findOne({ useername: "admin doe" });
 
-    const adminPassword = await bcrypt.hash("admin123", SALT_ROUNDS);
-    const regUserPassword = await bcrypt.hash("user123", SALT_ROUNDS);
+    if (!adminExists) {
+      const adminPassword = await bcrypt.hash("admin123", SALT_ROUNDS);
+      const regUserPassword = await bcrypt.hash("user123", SALT_ROUNDS);
 
-    if (userCount === 0) {
       await User.insertMany([
         {
-          username: "Admin Doe",
+          username: "Admin Doe".toLowerCase(),
           password: adminPassword,
           role: "admin",
           joinDate: new Date(),
         },
         {
-          username: "Regular Smith",
+          username: "Regular Smith".toLowerCase(),
           password: regUserPassword,
           role: "user",
           joinDate: new Date(),
         },
       ]);
       console.log("Seeded users collection.");
+    } else {
+      console.log("skipping seeding. users exist");
     }
   } catch (err) {
     console.error("Error seeding users collection:", err);
