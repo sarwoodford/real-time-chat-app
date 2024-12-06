@@ -145,6 +145,20 @@ app.get("/admin-dashboard", async (request, response) => {
   return response.render("admin-dashboard", { users });
 });
 
+app.get("/ban/:id", async (request, response) => {
+  if (!request.session.user || request.session.user.role !== "admin") {
+    return response.redirect("/login");
+  }
+
+  try {
+    await User.findByIdAndUpdate(request.params.id, { banned: true });
+    return response.redirect("/admin-dashboard");
+  } catch (error) {
+    console.error("Error banning user:", error);
+    return response.status(500).send("Server Error");
+  }
+});
+
 app.get("/logout", (request, response) => {
   request.session.destroy((err) => {
     if (err) {
@@ -171,6 +185,7 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true, trim: true, unique: true },
   password: { type: String, required: true },
   role: { type: String, enum: ["admin", "user"], default: "user" },
+  banned: { type: Boolean, default: false },
   joinDate: { type: Date, default: Date.now },
 });
 
@@ -195,15 +210,24 @@ async function seedUsers() {
     if (userCount === 0) {
       await User.insertMany([
         {
-          username: "Admin Doe",
+          username: "admin_user",
           password: adminPassword,
           role: "admin",
+          banned: false,
           joinDate: new Date(),
         },
         {
-          username: "Regular Smith",
+          username: "regular_user",
           password: regUserPassword,
           role: "user",
+          banned: false,
+          joinDate: new Date(),
+        },
+        {
+          username: "banned_user",
+          password: regUserPassword,
+          role: "user",
+          banned: true,
           joinDate: new Date(),
         },
       ]);

@@ -5,8 +5,13 @@
   <ul>
     <% users.forEach(user => { %>
     <li>
-      <%= user.username %>
+      <%= user.username %> <% if (user.banned === true) { %>
+      <span style="color: red">Banned</span>
+      <a href="/unban/<%= user._id %>">Unban</a>
+      <% } else { %>
+      <span style="color: green">Active</span>
       <a href="/ban/<%= user._id %>">Ban</a>
+      <% } %>
       <a href="/delete/<%= user._id %>">Delete</a>
     </li>
     <% }) %>
