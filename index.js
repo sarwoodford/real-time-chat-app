@@ -159,6 +159,34 @@ app.get("/ban/:id", async (request, response) => {
   }
 });
 
+app.get("/unban/:id", async (request, response) => {
+  if (!request.session.user || request.session.user.role !== "admin") {
+    return response.redirect("/login");
+  }
+
+  try {
+    await User.findByIdAndUpdate(request.params.id, { banned: false });
+    return response.redirect("/admin-dashboard");
+  } catch (error) {
+    console.error("Error unbanning user:", error);
+    return response.status(500).send("Server Error");
+  }
+});
+
+app.get("/delete/:id", async (request, response) => {
+  if (!request.session.user || request.session.user.role !== "admin") {
+    return response.redirect("/login");
+  }
+
+  try {
+    await User.findByIdAndDelete(request.params.id);
+    return response.redirect("/admin-dashboard");
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    return response.status(500).send("Server Error");
+  }
+});
+
 app.get("/logout", (request, response) => {
   request.session.destroy((err) => {
     if (err) {
