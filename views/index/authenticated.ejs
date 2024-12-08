@@ -4,11 +4,14 @@
   <h1>Live Chat</h1>
   <div class="chat-widget">
     <div class="chat-messages" id="chat-messages"></div>
+    <div id="notifications"></div>
     <form id="chat-form">
+      <input type="hidden" id="username" value="<%= user.username %>" />
       <input
         type="text"
-        id="#message-input"
+        id="message-input"
         placeholder="Type your message..."
+        required
       />
       <button type="submit">Send</button>
     </form>

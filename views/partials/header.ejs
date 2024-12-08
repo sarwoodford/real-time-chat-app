@@ -12,7 +12,9 @@
         <ul>
           <li><a href="/">Chats</a></li>
           <li><a href="/profile">Profile</a></li>
-          <li><a href="/admin-dashboard">Admin Dashboard</a></li>
+            <% if (typeof user !== 'undefined' && user.role === "admin") { %>
+            <li><a href="/admin-dashboard">Admin Dashboard</a></li>
+            <% } %>
           <li><a href="/logout">Logout</a></li>
         </ul>
       </nav>
