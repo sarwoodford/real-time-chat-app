@@ -33,7 +33,7 @@ app.get("/", async (request, response) => {
   if (request.session.user) {
     return response.redirect("/authenticated");
   }
-  response.render("index/unauthenticated");
+  response.render("index");
 });
 
 app.get("/login", async (request, response) => {
@@ -150,7 +150,10 @@ app.get("/admin-dashboard", async (request, response) => {
   }
 
   const users = await User.find({});
-  return response.render("admin-dashboard", { users });
+  return response.render("admin-dashboard", {
+    user: request.session.user,
+    users: users,
+  });
 });
 
 app.get("/ban/:id", async (request, response) => {

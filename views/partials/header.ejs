@@ -10,12 +10,23 @@
     <header>
       <nav>
         <ul>
-          <li><a href="/">Chats</a></li>
-          <li><a href="/profile">Profile</a></li>
-            <% if (typeof user !== 'undefined' && user.role === "admin") { %>
-            <li><a href="/admin-dashboard">Admin Dashboard</a></li>
+            <% if (typeof user !== 'undefined') { %>
+                <li><a href="/authenticated">Chats</a></li>
+                <li><a href="/profile">Profile</a></li>
+            <% } else {%>
+                <li><a href="/">Home</a></li>
             <% } %>
-          <li><a href="/logout">Logout</a></li>
+
+            <% if (typeof user !== 'undefined' && user.role === "admin") { %>
+                <li><a href="/admin-dashboard">Admin Dashboard</a></li>
+            <% } %>
+            
+            <% if (typeof user !== 'undefined') { %>
+                <li><a href="/logout">Logout</a></li>
+            <% } else { %>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/signup">Sign Up</a></li>
+            <% } %>
         </ul>
       </nav>
     </header>

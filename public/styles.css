@@ -96,6 +96,7 @@ body header {
 
 .error-message {
   color: #ff0000;
+  align-self: center;
 }
 
 /* Header Styles */
