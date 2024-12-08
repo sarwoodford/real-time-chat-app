@@ -29,19 +29,17 @@ let connectedClients = [];
 
 //Note: These are (probably) not all the required routes, but are a decent starting point for the routes you'll probably need
 
-app.ws("/ws", (socket, request) => {
-  socket.on("message", (rawMessage) => {
-    const parsedMessage = JSON.parse(rawMessage);
-  });
-
-  socket.on("close", () => {});
-});
-
 app.get("/", async (request, response) => {
+  if (request.session.user) {
+    return response.redirect("/authenticated");
+  }
   response.render("index/unauthenticated");
 });
 
 app.get("/login", async (request, response) => {
+  if (request.session.user) {
+    return response.redirect("/authenticated");
+  }
   response.render("login", { errorMessage: null });
 });
 
@@ -83,7 +81,7 @@ app.post("/login", async (request, response) => {
     console.log("User.session.role: " + request.session.user.role);
     console.log("Session: " + request.session.user);
 
-    return response.redirect("/dashboard");
+    return response.redirect("/authenticated");
   } catch (error) {
     console.error("Error Loggin In. Please Retry", error);
     return response.render("login", {
@@ -124,8 +122,12 @@ app.post("/signup", async (request, response) => {
   }
 });
 
-app.get("/dashboard", async (request, response) => {
-  return response.render("index/authenticated");
+app.get("/authenticated", async (request, response) => {
+  if (!request.session.user) {
+    return response.redirect("/login");
+  }
+
+  return response.render("index/authenticated", { user: request.session.user });
 });
 
 app.get("/profile", async (request, response) => {
@@ -144,7 +146,7 @@ app.get("/admin-dashboard", async (request, response) => {
 
   if (request.session.user.role !== "admin") {
     console.log(request.session.user.role);
-    return response.redirect("/dashboard");
+    return response.redirect("/authenticated");
   }
 
   const users = await User.find({});
@@ -273,6 +275,116 @@ async function seedUsers() {
 }
 
 seedUsers();
+
+app.ws("/ws", (socket, request) => {
+  // Log when a new user connects to the WebSocket
+  console.log("New WebSocket connection established");
+
+  // Log the username of the connected user, if they are not logged in, "guest" is used
+  // Will adjust to not even allow guest users to connect and redirect them back to login
+  const username = request.session.user
+    ? request.session.user.username
+    : "Guest";
+  console.log(`${username} connected`);
+
+  // Add the new user to the connectedClients array in an object that contains the socket and the username
+  connectedClients.push({ socket, username });
+
+  // Notify users when another user connects
+  connectedClients.forEach((client) => {
+    if (client.socket !== socket) {
+      client.socket.send(
+        JSON.stringify({
+          type: "notification",
+          message: `${username} has joined the chat!`,
+        })
+      );
+    }
+  });
+
+  // Handle incoming messages from the client
+  socket.on("message", async (rawMessage) => {
+    let message;
+    try {
+      message = JSON.parse(rawMessage);
+    } catch (error) {
+      console.error("Error parsing message:", error);
+      return;
+    }
+    const { sender, message: content } = message;
+
+    console.log("Received message:", sender, content, message.type);
+
+    if (message.type === "message") {
+      // Save message to database
+      const newMessage = new Message({ message: content, sender });
+      await newMessage.save();
+      console.log("Message saved to database");
+
+      // Send the message to all connected clients
+      connectedClients.forEach((client) => {
+        client.socket.send(
+          JSON.stringify({
+            type: "message",
+            username: sender,
+            message: content,
+            timestamp: new Date().toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+          })
+        );
+      });
+    }
+
+    if (message.type === "join") {
+      const { username } = message;
+
+      // If the user isn't already in the connectedClients array, add them
+      if (!connectedClients.some((client) => client.username === username)) {
+        connectedClients.push({ socket, username });
+
+        // Notify users when another user connects
+        connectedClients.forEach((client) => {
+          if (client.socket !== socket) {
+            client.socket.send(
+              JSON.stringify({
+                type: "notification",
+                message: `${username} has joined the chat!`,
+              })
+            );
+          }
+        });
+      }
+    }
+  });
+
+  // Handle WebSocket connection closing
+  socket.on("close", () => {
+    console.log(`${username} disconnected`);
+
+    // Remove the user from the connectedClients array
+    connectedClients = connectedClients.filter(
+      (client) => client.socket !== socket
+    );
+
+    // Notify the remaining users about the disconnection
+    connectedClients.forEach((client) => {
+      console.log("User disconnected: ", client.username);
+      client.socket.send(
+        JSON.stringify({
+          type: "notification",
+          message: `User ${username} has left the chat.`,
+        })
+      );
+    });
+  });
+
+  // Handle WebSocket errors
+  socket.on("error", (error) => {
+    console.error("WebSocket error:", error);
+  });
+});
 
 /**
  * Handles a client disconnecting from the chat server
