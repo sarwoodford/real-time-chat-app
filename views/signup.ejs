@@ -1,11 +1,29 @@
 <%- include('partials/header', { title: "Sign Up" }) %>
 
+<% const showTimeOut = includeTimeOut || false; %> 
+
 <div class="main-content">
   <h1>Sign Up</h1>
-  <form action="/signup" method="post" style="width: 300px">
-    <% if (errorMessage) { %>
-    <p class="error-message"><%= errorMessage %></p>
+  <% if (errorMessage) { %>
+    <div id="error-message" class="error-message"><%= errorMessage %></div>
+   <% } %> 
+   <%if (showTimeOut){%>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const errorMessage = document.getElementById("error-message");
+  
+        if (errorMessage) {
+          setTimeout(() => {
+            errorMessage.classList.add("hidden");
+            errorMessage.addEventListener("transitioned", () => {
+              errorMessage.remove();
+            });
+          }, 5000);
+        }
+      });
+    </script>
     <% } %>
+  <form action="/signup" method="post" style="width: 300px">
     <div class="form-input-container">
       <label for="username">Username:</label>
       <input type="text" id="username" name="username" required />

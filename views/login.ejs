@@ -1,9 +1,28 @@
-<%- include('partials/header', { title: "Log In" }) %>
+<%- include('partials/header', { title: "Log In" }) %> 
+
+<% const showTimeOut = includeTimeOut || false; %> 
 
 <div class="main-content">
   <h1>Login</h1>
+
   <% if (errorMessage) { %>
-  <p class="error-message"><%= errorMessage %></p>
+  <div id="error-message" class="error-message"><%= errorMessage %></div>
+ <% } %> 
+ <%if (showTimeOut){%>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const errorMessage = document.getElementById("error-message");
+
+      if (errorMessage) {
+        setTimeout(() => {
+          errorMessage.classList.add("hidden");
+          errorMessage.addEventListener("transitioned", () => {
+            errorMessage.remove();
+          });
+        }, 5000);
+      }
+    });
+  </script>
   <% } %>
 
   <form action="/login" method="POST" style="width: 300px">
