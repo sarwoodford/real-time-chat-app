@@ -96,7 +96,7 @@ document.getElementById("chat-form").addEventListener("submit", onMessageSent);
 function onNewMessageReceived(username, timestamp, message) {
   const chatMessages = document.querySelector("#chat-messages");
   const messageElement = document.createElement("div");
-  messageElement.innerHTML = `<div class="message-info"> <strong>${username}</strong> • <span class="time-stamp">${timestamp}</span>: </div> <div class = "message-content">${message}</div>`;
+  messageElement.innerHTML = `<div class="message-info"><a href="/profile/${username}" class="username-link">${username}</a> • <span class="time-stamp">${timestamp}</span>: </div> <div class = "message-content">${message}</div>`;
   // Different style to display the message
   // `<strong>${username}</strong> [${timestamp}]: ${message}`;
   chatMessages.appendChild(messageElement);
