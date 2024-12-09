@@ -297,6 +297,9 @@ app.ws("/ws", (socket, request) => {
   // Add the new user to the connectedClients array in an object that contains the socket and the username
   connectedClients.push({ socket, username });
 
+  // Update the list of online users
+  updateOnlineUsers();
+
   // Notify users when another user connects
   connectedClients.forEach((client) => {
     if (client.socket !== socket) {
@@ -345,17 +348,17 @@ app.ws("/ws", (socket, request) => {
       });
     }
 
-    if (message.type === "join") {
-      const { username } = message;
+    // if (message.type === "join") {
+    //   const { username } = message;
 
-      // If the user isn't already in the connectedClients array, add them
-      if (!connectedClients.some((client) => client.username === username)) {
-        connectedClients.push({ socket, username });
+    //   // If the user isn't already in the connectedClients array, add them
+    //   if (!connectedClients.some((client) => client.username === username)) {
+    //     connectedClients.push({ socket, username });
 
-        // Increment the number of connected users
-        numberOfConnectedUsers++;
-      }
-    }
+    //     // Increment the number of connected users
+    //     numberOfConnectedUsers++;
+    //   }
+    // }
   });
 
   // Handle WebSocket connection closing
@@ -367,8 +370,11 @@ app.ws("/ws", (socket, request) => {
       (client) => client.socket !== socket
     );
 
+    // Update the list of online users
+    updateOnlineUsers();
+
     // Decrement the number of connected users
-    numberOfConnectedUsers--;
+    // numberOfConnectedUsers--;
 
     // Notify the remaining users about the disconnection
     connectedClients.forEach((client) => {
@@ -381,6 +387,18 @@ app.ws("/ws", (socket, request) => {
       );
     });
   });
+
+  function updateOnlineUsers() {
+    const userList = connectedClients.map((client) => client.username);
+    connectedClients.forEach((client) => {
+      client.socket.send(
+        JSON.stringify({
+          type: "user-list-update",
+          userList: userList,
+        })
+      );
+    });
+  }
 
   // Handle WebSocket errors
   socket.on("error", (error) => {

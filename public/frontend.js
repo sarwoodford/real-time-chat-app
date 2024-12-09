@@ -20,7 +20,6 @@ function setupWebSocket() {
         eventData.timestamp,
         eventData.message
       );
-      console.log("onNewMessageReceived called");
     } else if (eventData.type === "notification") {
       // If the message type is a notification, alert the user with its contents
       console.log("Notification received:", eventData);
@@ -29,6 +28,9 @@ function setupWebSocket() {
       } else if (eventData.subtype === "user-connection") {
         onUserConnected(eventData.username);
       }
+    } else if (eventData.type === "user-list-update") {
+      console.log("Updated online users list:", eventData.userList);
+      updateUserList(eventData.userList);
     }
   });
 
@@ -48,6 +50,19 @@ function setupWebSocket() {
 
 // Initialize WebSocket connection
 let webSocket = setupWebSocket();
+
+// Function to update the list of online users
+function updateUserList(userList) {
+  const onlineUsers = document.querySelector("#online-user-list");
+  onlineUsers.innerHTML = ""; // Clear the current list
+
+  // Append each online user to the list
+  userList.forEach((username) => {
+    const onlineUserElement = document.createElement("li");
+    onlineUserElement.textContent = username;
+    onlineUsers.appendChild(onlineUserElement);
+  });
+}
 
 // Function to handle sending a message to the server
 function onMessageSent(event) {
