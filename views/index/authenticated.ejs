@@ -3,8 +3,15 @@
 <div class="main-content">
   <h1>Live Chat</h1>
   <div class="chat-widget">
-    <div class="chat-messages" id="chat-messages"></div>
-    <div id="notifications"></div>
+    <div>
+      <div class="chat-messages" id="chat-messages"></div>
+      <div class="chat-users" id="chat-users">
+        <h3>Online Users</h3>
+        <ul id="online-user-list">
+          <li><%= user.username %></li>
+        </ul>
+      </div>
+    </div>
     <form id="chat-form">
       <input type="hidden" id="username" value="<%= user.username %>" />
       <input

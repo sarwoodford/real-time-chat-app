@@ -26,6 +26,7 @@ app.use(
 );
 
 let connectedClients = [];
+let numberOfConnectedUsers = 0;
 
 //Note: These are (probably) not all the required routes, but are a decent starting point for the routes you'll probably need
 
@@ -33,7 +34,10 @@ app.get("/", async (request, response) => {
   if (request.session.user) {
     return response.redirect("/authenticated");
   }
-  response.render("index");
+
+  // Get the number of users connected to the chat
+
+  response.render("index", { numberOfConnectedUsers: connectedClients.length });
 });
 
 app.get("/login", async (request, response) => {
@@ -293,13 +297,17 @@ app.ws("/ws", (socket, request) => {
   // Add the new user to the connectedClients array in an object that contains the socket and the username
   connectedClients.push({ socket, username });
 
+  // Update the list of online users
+  updateOnlineUsers();
+
   // Notify users when another user connects
   connectedClients.forEach((client) => {
     if (client.socket !== socket) {
       client.socket.send(
         JSON.stringify({
           type: "notification",
-          message: `${username} has joined the chat!`,
+          subtype: "user-connection",
+          username: username,
         })
       );
     }
@@ -340,26 +348,17 @@ app.ws("/ws", (socket, request) => {
       });
     }
 
-    if (message.type === "join") {
-      const { username } = message;
+    // if (message.type === "join") {
+    //   const { username } = message;
 
-      // If the user isn't already in the connectedClients array, add them
-      if (!connectedClients.some((client) => client.username === username)) {
-        connectedClients.push({ socket, username });
+    //   // If the user isn't already in the connectedClients array, add them
+    //   if (!connectedClients.some((client) => client.username === username)) {
+    //     connectedClients.push({ socket, username });
 
-        // Notify users when another user connects
-        connectedClients.forEach((client) => {
-          if (client.socket !== socket) {
-            client.socket.send(
-              JSON.stringify({
-                type: "notification",
-                message: `${username} has joined the chat!`,
-              })
-            );
-          }
-        });
-      }
-    }
+    //     // Increment the number of connected users
+    //     numberOfConnectedUsers++;
+    //   }
+    // }
   });
 
   // Handle WebSocket connection closing
@@ -371,17 +370,35 @@ app.ws("/ws", (socket, request) => {
       (client) => client.socket !== socket
     );
 
+    // Update the list of online users
+    updateOnlineUsers();
+
+    // Decrement the number of connected users
+    // numberOfConnectedUsers--;
+
     // Notify the remaining users about the disconnection
     connectedClients.forEach((client) => {
-      console.log("User disconnected: ", client.username);
       client.socket.send(
         JSON.stringify({
           type: "notification",
-          message: `User ${username} has left the chat.`,
+          subtype: "user-disconnection",
+          username: username,
         })
       );
     });
   });
+
+  function updateOnlineUsers() {
+    const userList = connectedClients.map((client) => client.username);
+    connectedClients.forEach((client) => {
+      client.socket.send(
+        JSON.stringify({
+          type: "user-list-update",
+          userList: userList,
+        })
+      );
+    });
+  }
 
   // Handle WebSocket errors
   socket.on("error", (error) => {
