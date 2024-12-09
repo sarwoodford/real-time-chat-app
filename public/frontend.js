@@ -23,10 +23,13 @@ function setupWebSocket() {
       console.log("onNewMessageReceived called");
     } else if (eventData.type === "notification") {
       // If the message type is a notification, alert the user with its contents
-      alert(eventData.message);
+      console.log("Notification received:", eventData);
+      if (eventData.subtype === "user-disconnection") {
+        onUserDisconnected(eventData.username);
+      } else if (eventData.subtype === "user-connection") {
+        onUserConnected(eventData.username);
+      }
     }
-
-    console.log("Received message:", eventData);
   });
 
   // Event listener for WebSocket debugging and error handling
@@ -45,8 +48,6 @@ function setupWebSocket() {
 
 // Initialize WebSocket connection
 let webSocket = setupWebSocket();
-
-console.log("frontend.js loaded");
 
 // Function to handle sending a message to the server
 function onMessageSent(event) {
@@ -81,25 +82,25 @@ function onNewMessageReceived(username, timestamp, message) {
   const chatMessages = document.querySelector("#chat-messages");
   const messageElement = document.createElement("div");
   messageElement.innerHTML = `<div class="message-info"> <strong>${username}</strong> • <span class="time-stamp">${timestamp}</span>: </div> <div class = "message-content">${message}</div>`;
-  //   `<strong>${username}</strong> [${timestamp}]: ${message}`;
+  // Different style to display the message
+  // `<strong>${username}</strong> [${timestamp}]: ${message}`;
   chatMessages.appendChild(messageElement);
-
-  console.log(
-    "OnNewMessageReceived called with:",
-    username,
-    timestamp,
-    message
-  );
 }
 
-// Optional: Function for handling a user connecting (if needed)
+// Function for handling a user connecting
 function onUserConnected(username) {
-  console.log(`${username} has connected.`);
-  // Optionally, update UI to show the user has connected
+  // Append a notification to the chat
+  const chatMessages = document.querySelector("#chat-messages");
+  const messageElement = document.createElement("div");
+  messageElement.innerHTML = `<div class="notification-text"><em>${username} has joined the chat.</em></div>`;
+  chatMessages.appendChild(messageElement);
 }
 
-// Optional: Function for handling a user disconnecting (if needed)
+// Function for handling a user disconnecting
 function onUserDisconnected(username) {
-  console.log(`${username} has disconnected.`);
-  // Optionally, update UI to show the user has disconnected
+  // Append a notification to the chat
+  const chatMessages = document.querySelector("#chat-messages");
+  const messageElement = document.createElement("div");
+  messageElement.innerHTML = `<div class="notification-text"><em>${username} has left the chat.</em></div>`;
+  chatMessages.appendChild(messageElement);
 }
