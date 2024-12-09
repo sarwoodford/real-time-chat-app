@@ -172,3 +172,12 @@ button:hover {
   background-color: #a37cc7;
   transform: translateY(-2px);
 }
+
+/* Chat Styles */
+.my-chat-username-link {
+  color: #028090;
+}
+
+.other-chat-username-link {
+  color: #eae151;
+}

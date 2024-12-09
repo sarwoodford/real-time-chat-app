@@ -4,6 +4,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const bcrypt = require("bcrypt");
+const { profile } = require("console");
 
 const PORT = 3000;
 //TODO: Replace with the URI pointing to your own MongoDB setup
@@ -141,6 +142,24 @@ app.get("/profile", async (request, response) => {
 
   const user = await User.findById(request.session.user.id);
   return response.render("profile", { user });
+});
+
+app.get("/profile/:username", async (request, response) => {
+  if (!request.session.user) {
+    return response.redirect("/login");
+  }
+
+  const { username } = request.params;
+  const user = await User.findOne({ username });
+
+  if (!user) {
+    return response.status(404).send("No profile to display. User not found.");
+  }
+
+  return response.render("profile", {
+    user: request.session.user,
+    profile: user,
+  });
 });
 
 app.get("/admin-dashboard", async (request, response) => {

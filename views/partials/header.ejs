@@ -11,9 +11,9 @@
       <nav>
         <ul>
             <% if (typeof user !== 'undefined') { %>
-                <li><a href="/authenticated">Chats</a></li>
-                <li><a href="/profile">Profile</a></li>
-            <% } else {%>
+                <li><a href="/authenticated">Chat</a></li>
+                <li><a href="/profile/<%= user.username %>">Profile</a></li>
+            <% } else { %>
                 <li><a href="/">Home</a></li>
             <% } %>
 

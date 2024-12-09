@@ -1,9 +1,19 @@
-<%- include('partials/header', { title: "Profile", user }) %>
+<%- include('partials/header', { title: `${profile.username}'s Profile` }) %>
 
 <div class="main-content">
-  <h1>Your Profile</h1>
-  <p><strong>Username:</strong> <%= user.username %></p>
-  <p><strong>Join Date:</strong> <%= user.joinDate.toLocaleDateString() %></p>
+  <div id="profile-container">
+    <% if (user.username === profile.username) { %>
+    <h1>Your Profile</h1>
+    <% } else {%>
+    <h1><%= `${profile.username}'s Profile`%></h1>
+    <% } %>
+  </div>
+  <p><strong>Username:</strong> <%= profile.username %></p>
+  <p>
+    <strong>Join Date:</strong> <%= profile.joinDate.toLocaleDateString() %>
+  </p>
+
+  <p><a href="/">Return to Chat</a></p>
 </div>
 
 <%- include('partials/footer') %>
