@@ -38,14 +38,20 @@ app.get("/", async (request, response) => {
 
   // Get the number of users connected to the chat
 
-  response.render("index", { numberOfConnectedUsers: connectedClients.length });
+  response.render("index", { 
+    numberOfConnectedUsers: connectedClients.length,
+    includeTimeOut : false,
+  });
 });
 
 app.get("/login", async (request, response) => {
   if (request.session.user) {
     return response.redirect("/authenticated");
   }
-  response.render("login", { errorMessage: null });
+  response.render("login", { 
+    errorMessage: null,
+    includeTimeOut: false,
+  });
 });
 
 app.post("/login", async (request, response) => {
@@ -59,6 +65,7 @@ app.post("/login", async (request, response) => {
     if (!user) {
       return response.render("login", {
         errorMessage: "Oops! Invalid Login Credentials, Try Again!",
+        includeTimeOut: true,
       });
     }
 
@@ -66,12 +73,14 @@ app.post("/login", async (request, response) => {
     if (!isValidPassword) {
       return response.render("login", {
         errorMessage: "Oops! Invalid Login Credentials, Try Again!",
+        includeTimeOut: true,
       });
     }
 
     if (user.banned) {
       return response.render("login", {
         errorMessage: "You have been banned, sucka.",
+        includeTimeOut: true,
       });
     }
 
@@ -91,12 +100,16 @@ app.post("/login", async (request, response) => {
     console.error("Error Loggin In. Please Retry", error);
     return response.render("login", {
       errorMessage: "Error Loggin In. Please Retry.",
+      includeTimeOut: true,
     });
   }
 });
 
 app.get("/signup", async (request, response) => {
-  return response.render("signup", { errorMessage: null });
+  return response.render("signup", { 
+    errorMessage: null,
+    includeTimeOut: false,
+  });
 });
 
 app.post("/signup", async (request, response) => {
@@ -107,6 +120,7 @@ app.post("/signup", async (request, response) => {
     if (existingUser) {
       return response.render("signup", {
         errorMessage: "Username already taken.",
+        includeTimeOut: true,
       });
     }
 
@@ -123,6 +137,7 @@ app.post("/signup", async (request, response) => {
     console.error("Error signing up:", error);
     return response.render("signup", {
       errorMessage: "Registration was unsuccessful. Please try again.",
+      includeTimeOut: true,
     });
   }
 });
