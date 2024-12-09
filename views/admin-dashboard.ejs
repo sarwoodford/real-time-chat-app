@@ -2,24 +2,26 @@
 
 <div class="main-content">
   <h1>Admin Dashboard</h1>
-  <ul>
-    <% users.forEach(user => { %>
-    <li>
-      <%= user.username %> <% if (user.banned === true && user.role != "admin")
-      { %>
-      <span style="color: red">Banned</span>
-      <a href="/unban/<%= user._id %>">Unban</a>
-      <% } %> <% if (user.banned === false && user.role != "admin") { %>
-      <span style="color: green">Active</span>
-      <a href="/ban/<%= user._id %>">Ban</a>
-      <% } %> <% if (user.role != "admin") { %>
-      <a href="/delete/<%= user._id %>">Delete</a>
-      <% } else {%>
-      <span style="color: yellow">Admin</span>
-      <% } %>
-    </li>
-    <% }) %>
-  </ul>
+  <div class="admin-display">
+    <ul>
+      <% users.forEach(user => { %>
+      <li class="dashboard-user">
+        <span class="dashboard-username"><%= user.username %></span>
+        <% if (user.banned === true && user.role != "admin") { %>
+        <span class="dashboard-banned">Banned</span>
+        <a href="/unban/<%= user._id %>" class="dashboard-action">Unban</a>
+        <% } %> <% if (user.banned === false && user.role != "admin") { %>
+        <span class="dashboard-status">Active</span>
+        <a href="/ban/<%= user._id %>" class="dashboard-action">Ban</a>
+        <% } %> <% if (user.role != "admin") { %>
+        <a href="/delete/<%= user._id %>" class="dashboard-delete">Delete</a>
+        <% } else {%>
+        <span class="dashboard-admin">Admin</span>
+        <% } %>
+      </li>
+      <% }) %>
+    </ul>
+  </div>
 </div>
 
 <%- include('partials/footer') %>

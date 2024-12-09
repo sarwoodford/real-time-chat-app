@@ -58,14 +58,14 @@ app.post("/login", async (request, response) => {
     console.log("User Object: " + user);
     if (!user) {
       return response.render("login", {
-        errorMessage: "Invalid Login Credentials. User not found.",
+        errorMessage: "Oops! Invalid Login Credentials, Try Again!",
       });
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
       return response.render("login", {
-        errorMessage: "Invalid Login Credentials.",
+        errorMessage: "Oops! Invalid Login Credentials, Try Again!",
       });
     }
 

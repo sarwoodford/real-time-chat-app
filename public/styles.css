@@ -95,8 +95,15 @@ body header {
 }
 
 .error-message {
-  color: #ff0000;
-  align-self: center;
+  display: flex;
+  align-items: center;
+  background-color: red;
+  color: #fcfbfb;
+  border: 1px solid #4a2c80;
+  padding: 5px 10px;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 10px 0;
 }
 
 /* Header Styles */
@@ -180,4 +187,100 @@ button:hover {
 
 .other-chat-username-link {
   color: #eae151;
+}
+
+.register-link {
+  background-color: white;
+  border-radius: 5px;
+  padding: 5px;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.register-link:hover {
+  background-color: white;
+  border-radius: 5px;
+  padding: 5px;
+  transform: translateY(-2px);
+}
+
+.return-to-chat {
+  background-color: white;
+  color: #4a2c80;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+
+.admin-display ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dashboard-user {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-username {
+  flex: 1;
+  font-weight: bold;
+  color: #4a2c80;
+}
+
+.dashboard-banned {
+  color: red;
+  font-weight: bold;
+  margin-right: 15px;
+}
+
+.dashboard-status {
+  color: green;
+  font-weight: bold;
+  margin-right: 15px;
+}
+
+.dashboard-admin {
+  color: #ffc107;
+  font-weight: bold;
+}
+
+.dashboard-action,
+.dashboard-delete {
+  text-decoration: none;
+  margin-left: 10px;
+  font-weight: bold;
+  font-size: 0.9em;
+  padding: 5px 10px;
+  border-radius: 3px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dashboard-action {
+  color: #007bff;
+  background-color: #e7f3ff;
+  border: 1px solid #007bff;
+}
+
+.dashboard-delete {
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #dc3545;
+}
+
+.dashboard-action:hover {
+  background-color: #cce5ff;
+  color: #0056b3;
+}
+
+.dashboard-delete:hover {
+  background-color: #f5c6cb;
+  color: #b21f2d;
 }
