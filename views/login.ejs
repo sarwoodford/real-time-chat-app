@@ -1,23 +1,33 @@
-<%- include('partials/header', { title: "Log In" }) %> 
-
-<% const showTimeOut = includeTimeOut || false; %> 
+<%- include('partials/header', { title: "Log In" }) %> <% const showTimeOut =
+includeTimeOut || false; %>
 
 <div class="main-content">
   <h1>Login</h1>
 
   <% if (errorMessage) { %>
   <div id="error-message" class="error-message"><%= errorMessage %></div>
- <% } %> 
- <%if (showTimeOut){%>
+  <% } %> <% if (successMessage) { %>
+  <div id="success-message" class="success-message"><%= successMessage %></div>
+  <% } %> <% if (showTimeOut) {%>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const errorMessage = document.getElementById("error-message");
+      const successMessage = document.getElementById("success-message");
 
       if (errorMessage) {
         setTimeout(() => {
           errorMessage.classList.add("hidden");
           errorMessage.addEventListener("transitioned", () => {
             errorMessage.remove();
+          });
+        }, 5000);
+      }
+
+      if (successMessage) {
+        setTimeout(() => {
+          successMessage.classList.add("hidden");
+          successMessage.addEventListener("transitioned", () => {
+            successMessage.remove();
           });
         }, 5000);
       }

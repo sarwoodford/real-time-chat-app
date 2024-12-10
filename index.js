@@ -38,9 +38,9 @@ app.get("/", async (request, response) => {
 
   // Get the number of users connected to the chat
 
-  response.render("index", { 
+  response.render("index", {
     numberOfConnectedUsers: connectedClients.length,
-    includeTimeOut : false,
+    includeTimeOut: false,
   });
 });
 
@@ -48,8 +48,11 @@ app.get("/login", async (request, response) => {
   if (request.session.user) {
     return response.redirect("/authenticated");
   }
-  response.render("login", { 
+  const successMessage = request.session.successMessage;
+  request.session.successMessage = null;
+  response.render("login", {
     errorMessage: null,
+    successMessage: successMessage,
     includeTimeOut: false,
   });
 });
@@ -106,7 +109,7 @@ app.post("/login", async (request, response) => {
 });
 
 app.get("/signup", async (request, response) => {
-  return response.render("signup", { 
+  return response.render("signup", {
     errorMessage: null,
     includeTimeOut: false,
   });
@@ -130,9 +133,12 @@ app.post("/signup", async (request, response) => {
     // Create the new user and save it to the database
     const newUser = new User({ username, password: hashedPassword });
     await newUser.save();
-
-    // Redirect the user to the login page
-    return response.redirect("/login");
+    request.session.successMessage = "Registration successful. Please log in.";
+    return response.render("login", {
+      errorMessage: null,
+      successMessage: "Registration successful. Please log in.",
+      includeTimeOut: false,
+    });
   } catch (error) {
     console.error("Error signing up:", error);
     return response.render("signup", {

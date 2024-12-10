@@ -114,6 +114,26 @@ body header {
   pointer-events: none;
 }
 
+.success-message {
+  display: flex;
+  align-items: center;
+  background-color: green;
+  color: #fcfbfb;
+  border: 1px solid #4a2c80;
+  padding: 5px 10px;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 10px 0;
+  opacity: 1;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.success-message.hidden {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+}
+
 /* Header Styles */
 header {
   background-color: #4a2c80;
