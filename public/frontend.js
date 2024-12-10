@@ -59,7 +59,7 @@ function updateUserList(userList) {
   // Append each online user to the list
   userList.forEach((username) => {
     const onlineUserElement = document.createElement("li");
-    onlineUserElement.textContent = username;
+    onlineUserElement.innerHTML = `<a href="/profile/${username}" class="online-user-link">${username}</a>`;
     onlineUsers.appendChild(onlineUserElement);
   });
 }

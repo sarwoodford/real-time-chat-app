@@ -266,7 +266,7 @@ button:hover {
 .dashboard-banned {
   color: red;
   font-weight: bold;
-  margin-right: 15px;
+  margin-left: 15px;
 }
 
 .dashboard-status {
@@ -311,4 +311,135 @@ button:hover {
 .dashboard-delete:hover {
   background-color: #f5c6cb;
   color: #b21f2d;
+}
+
+/* Chat container: both the chat widget and users container */
+#chat-container {
+  display: flex;
+  width: 100%;
+  height: calc(100vh - 120px);
+}
+
+/* The left side, which is the chat widget */
+.chat-widget {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  background-color: rgb(24, 26, 27);
+  border-right: 1px solid rgb(58, 62, 65);
+  height: 100vh;
+  margin: 0px 0px 8px 8px;
+  border-radius: 20px;
+  /* overflow-y: hidden; */
+}
+
+/* Chat messages container */
+.chat-messages {
+  flex: 1;
+  overflow-y: scroll;
+  padding: 10px;
+  background-color: rgb(27, 29, 30);
+  border-bottom: 1px solid rgb(58, 62, 65);
+  border-radius: 10px;
+  max-height: calc(100vh - 140px);
+}
+
+/* Styling for chat form */
+#chat-form {
+  font-size: 18px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  background-color: rgb(24, 26, 27);
+  padding: 10px 0px;
+  gap: 10px;
+  border-top: 1px solid rgb(58, 62, 65);
+}
+
+.message-content {
+  padding: 2px 0px 5px 0px;
+  border-radius: 5px;
+  font-size: 20px;
+}
+
+.message-info {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.time-stamp {
+  font-size: 12px;
+  color: #aaa;
+}
+
+#message-input {
+  flex: 1;
+  padding: 0px 10px;
+  font-size: 16px;
+  border: 1px solid rgb(120, 111, 98);
+  border-radius: 5px;
+}
+
+#chat-form button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#chat-form button:hover {
+  background-color: #0056b3;
+}
+
+/* Right side for online users */
+.chat-users {
+  width: 250px;
+  padding: 10px;
+  background-color: rgb(24, 26, 27);
+  height: 100vh;
+  overflow-y: auto;
+  border-left: 1px solid rgb(58, 62, 65);
+  border-radius: 20px;
+  margin: 0px 8px 8px 0px;
+}
+
+.chat-users h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+#online-user-list {
+  list-style: none;
+  overflow-y: auto;
+}
+
+#online-user-list li {
+  padding: 5px;
+  font-size: 16px;
+  color: #fff;
+  border-bottom: 1px solid #ddd;
+}
+
+#online-user-list li:hover {
+  background-color: #2b2f3d;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.notification-text {
+  color: #aaa;
+  text-align: center;
+}
+
+.online-user-link {
+  color: #fff;
+  text-decoration: none;
 }
