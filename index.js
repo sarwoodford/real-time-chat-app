@@ -69,6 +69,7 @@ app.post("/login", async (request, response) => {
       return response.render("login", {
         errorMessage: "Oops! Invalid Login Credentials, Try Again!",
         includeTimeOut: true,
+        successMessage: null,
       });
     }
 
@@ -77,6 +78,7 @@ app.post("/login", async (request, response) => {
       return response.render("login", {
         errorMessage: "Oops! Invalid Login Credentials, Try Again!",
         includeTimeOut: true,
+        successMessage: null,
       });
     }
 
@@ -84,6 +86,7 @@ app.post("/login", async (request, response) => {
       return response.render("login", {
         errorMessage: "You have been banned, sucka.",
         includeTimeOut: true,
+        successMessage: null,
       });
     }
 
@@ -104,6 +107,7 @@ app.post("/login", async (request, response) => {
     return response.render("login", {
       errorMessage: "Error Loggin In. Please Retry.",
       includeTimeOut: true,
+      successMessage: null,
     });
   }
 });
@@ -332,6 +336,11 @@ app.ws("/ws", (socket, request) => {
   const username = request.session.user
     ? request.session.user.username
     : "Guest";
+
+  if (username === "Guest") {
+    return;
+  }
+
   console.log(`${username} connected`);
 
   // Add the new user to the connectedClients array in an object that contains the socket and the username

@@ -20,6 +20,7 @@ body header {
   flex: 1;
   align-items: center;
   flex-direction: column;
+  height: calc(100vh - 120px);
 }
 
 .main-content h1 {
@@ -328,7 +329,7 @@ button:hover {
   padding: 10px;
   background-color: rgb(24, 26, 27);
   border-right: 1px solid rgb(58, 62, 65);
-  height: 100vh;
+  height: calc(100% - 20px);
   margin: 0px 0px 8px 8px;
   border-radius: 20px;
   /* overflow-y: hidden; */
@@ -403,7 +404,7 @@ button:hover {
   width: 250px;
   padding: 10px;
   background-color: rgb(24, 26, 27);
-  height: 100vh;
+  height: calc(100% - 20px);
   overflow-y: auto;
   border-left: 1px solid rgb(58, 62, 65);
   border-radius: 20px;
