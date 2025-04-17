@@ -67,12 +67,8 @@ This project is provided for **personal use only**. Redistribution, modification
 
 For detailed license terms, refer to the [LICENSE](./LICENSE.md) file.
 
-## Credits
 
-This project, **E-Commerce Platform**, was collaboratively developed by a dedicated team:
-
-- **[Sara Woodford](https://github.com/sarwoodford)** 
-- **[Abdalnasser Ali](https://github.com/Nasser-A-Ali)** 
-- **[Stephen Crocker](https://github.com/SearchingSteve)** 
-
-Each team member played an essential role in building this platform, contributing their unique skills and expertise. Thanks to all contributors for their hard work and collaboration!
+## Authors
+- **[Nasser-A-Ali](https://github.com/Nasser-A-Ali)** 
+- **[sarwoodford](https://github.com/sarwoodford)** 
+- **[SearchingSteve](https://github.com/SearchingSteve)** 
